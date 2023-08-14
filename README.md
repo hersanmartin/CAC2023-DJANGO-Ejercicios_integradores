@@ -1,1 +1,1 @@
-# Ejercicios-pr-cticos-integradores
+# Ejercicios-practicos-integradores
