@@ -12,83 +12,56 @@
 # cuenta.
 
 
-class Persona:
-    def __init__(self, nombre="", edad=0, dni=""):
-        self.__nombre = nombre
-        self.__edad = edad
-        self.__dni = dni
 
-    def get_nombre(self):
-        return self.__nombre
-    
-    def set_nombre(self, nuevo_nombre):
-        self.__nombre = nuevo_nombre
+class Titular:
+    def __init__(self, nombre, edad):
+        self.nombre = nombre
+        self.edad = edad
         
-    def get_edad(self):
-        return self.__edad
+
+class Cuenta:
+    def __init__(self, titular, cantidad):
+        self.titular = titular
+        self.cantidad = cantidad
     
-    def set_edad(self, nueva_edad):
-        if nueva_edad >= 0:
-            self.__edad = nueva_edad
-    
-    def get_dni(self):
-        return self.__dni
-    
-    def set_dni(self, nuevo_dni):
-        if len(nuevo_dni) == 8:  # Validación básica de longitud de DNI
-            self.__dni = nuevo_dni
-
-    def es_mayor_de_edad(self):
-        return self.__edad >= 18
-
-
-class CuentaJoven(Persona):
-    def __init__(self, titular, cantidad=0.0, bonificacion=0.0):
-        super().__init__(titular)
-        self.__cantidad = cantidad
-        self.__bonificacion = bonificacion
-
-    def get_titular(self):
-        return self.__titular
-    
-    def set_titular(self, nuevo_titular):
-        self.__titular = nuevo_titular
-        
-    def get_cantidad(self):
-        return self.__cantidad
-    
-    def set_cantidad(self, nueva_cantidad):
-        self.__cantidad = nueva_cantidad
-        
-    def get_bonificacion(self):
-        return self.__bonificacion
-    
-    def set_bonificacion(self, nueva_bonificacion):
-        self.__bonificacion = nueva_bonificacion
-
-    def es_titular_valido(self):
-        return self.es_mayor_de_edad() and self.get_edad() < 25
-
-    def retirar(self, cantidad):
-        if self.es_titular_valido():
-            super().retirar(cantidad)
-
     def mostrar(self):
-        super().mostrar()
-        print(f"Cuenta Joven\nBonificación: {self.__bonificacion}%")
+        return f"Titular: {self.titular}\nCantidad: {self.cantidad}"
+
+
+class CuentaJoven(Cuenta):
+    def __init__(self, titular, cantidad, bonificacion):
+        super().__init__(titular, cantidad)
+        self.bonificacion = bonificacion
+    
+    def set_bonificacion(self, bonificacion):
+        self.bonificacion = bonificacion
+    
+    def get_bonificacion(self):
+        return self.bonificacion
+    
+    def es_titular_valido(self):
+        edad = self.titular.edad # Supongamos que la clase Titular tiene un atributo "edad"
+        return 18 <= edad < 25
+    
+    def retirar(self, cantidad):
+        if self.es_titular_valido() and self.cantidad >= cantidad:
+            self.cantidad -= cantidad
+            return True
+        return False
+    
+    def mostrar(self):
+        return f"Cuenta Joven\n{super().mostrar()}\nBonificación: {self.bonificacion}%"
+
+
+
 
 # Ejemplo de uso
-titular_joven = "María Gómez"
-cuenta_joven = CuentaJoven(titular_joven, bonificacion=10.0)
+titular_joven = Titular("Juan", 20)
+cuenta_joven = CuentaJoven(titular_joven, 1000, 5)
 
-cuenta_joven.set_edad(20)
-cuenta_joven.mostrar()
-
-cuenta_joven.ingresar(1000)
-cuenta_joven.retirar(200)
-cuenta_joven.mostrar()
-
-
+print(cuenta_joven.mostrar())
+print("Es titular válido:", cuenta_joven.es_titular_valido())
+print("Retiro exitoso:", cuenta_joven.retirar(200))
 
 
 
